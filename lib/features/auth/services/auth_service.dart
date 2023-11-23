@@ -6,9 +6,13 @@ import 'dart:developer';
 import 'package:amazon_clone/constants/error_handling.dart';
 import 'package:amazon_clone/constants/global_vars.dart';
 import 'package:amazon_clone/constants/utils.dart';
+import 'package:amazon_clone/features/home/screens/home_screen.dart';
 import 'package:amazon_clone/models/user.dart';
+import 'package:amazon_clone/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   Future<void> signupUser({
@@ -25,7 +29,8 @@ class AuthService {
           address: '',
           type: '',
           token: '',
-          id: '');
+          id: '',
+          iV: null);
       http.Response response = await http.post(
         Uri.parse('$uri/api/signup'),
         body: jsonEncode(user),
@@ -68,11 +73,14 @@ class AuthService {
       httpErrorHandling(
         response: response,
         context: context,
-        onSuccess: () {
-          shawSnackbar(
-            context,
-            'You successfully signin',
-          );
+        onSuccess: () async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          Provider.of<UserProvider>(context, listen: false)
+              .setUser(response.body);
+          await prefs.setString(
+              'auth-token', jsonDecode(response.body)['token']);
+          Navigator.pushNamedAndRemoveUntil(
+              context, HomeScreen.routeName, (route) => false);
         },
       );
       log(response.body);
