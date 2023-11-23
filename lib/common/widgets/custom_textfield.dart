@@ -13,7 +13,7 @@ class CustomTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      decoration:  InputDecoration(
+      decoration: InputDecoration(
         hintText: hintText,
         border: const OutlineInputBorder(
             borderSide: BorderSide(
@@ -24,7 +24,10 @@ class CustomTextField extends StatelessWidget {
           color: Colors.black38,
         )),
       ),
-      validator: (val) {},
+      validator: (val) {
+        //edit later
+        return val;
+      },
     );
   }
 }

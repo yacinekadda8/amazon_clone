@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true, // can remove this line
       ),
       onGenerateRoute: (settings) => generateRoute(settings),
-      home: AuthScreen(),
+      home: const AuthScreen(),
     );
   }
 }
