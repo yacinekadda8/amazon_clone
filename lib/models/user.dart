@@ -19,16 +19,18 @@ class User {
     this.v,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
-        name: json["name"],
-        email: json["email"],
-        password: json["password"],
-        address: json["address"],
-        type: json["type"],
-        token: json["token"],
-        id: json["_id"],
-        v: json["__v"],
-      );
+  factory User.fromMap(Map<String, dynamic> map) {
+    return User(
+      name: map["name"] ?? "",
+      email: map["email"] ?? "",
+      password: map["password"] ?? "",
+      address: map["address"] ?? "",
+      type: map["type"] ?? "",
+      token: map["token"] ?? "",
+      id: map["_id"] ?? "",
+      v: map["__v"] as int?,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "name": name,

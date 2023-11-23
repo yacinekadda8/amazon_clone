@@ -1,13 +1,22 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:amazon_clone/constants/error_handling.dart';
 import 'package:amazon_clone/constants/global_vars.dart';
+import 'package:amazon_clone/constants/utils.dart';
 import 'package:amazon_clone/models/user.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService {
-  void signupUser({
+  Future<void> signupUser({
     required String name,
     required String email,
     required String password,
-  }) {
+    required BuildContext context,
+  }) async {
     try {
       User user = User(
           name: name,
@@ -17,7 +26,61 @@ class AuthService {
           type: '',
           token: '',
           id: '');
-      http.post(Uri.parse('$uri/api/signup'), body: {});
-    } catch (e) {}
+      http.Response response = await http.post(
+        Uri.parse('$uri/api/signup'),
+        body: jsonEncode(user),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+      );
+      httpErrorHandling(
+        response: response,
+        context: context,
+        onSuccess: () {
+          shawSnackbar(
+            context,
+            'your account has been successfully created',
+          );
+        },
+      );
+      log(response.body);
+    } catch (e) {
+      shawSnackbar(
+        context,
+        e.toString(),
+      );
+    }
+  }
+
+  Future<void> signinUser({
+    required String email,
+    required String password,
+    required BuildContext context,
+  }) async {
+    try {
+      http.Response response = await http.post(
+        Uri.parse('$uri/api/signin'),
+        body: jsonEncode({'email': email, 'password': password}),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+      );
+      httpErrorHandling(
+        response: response,
+        context: context,
+        onSuccess: () {
+          shawSnackbar(
+            context,
+            'You successfully signin',
+          );
+        },
+      );
+      log(response.body);
+    } catch (e) {
+      shawSnackbar(
+        context,
+        e.toString(),
+      );
+    }
   }
 }

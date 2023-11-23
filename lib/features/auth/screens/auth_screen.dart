@@ -1,6 +1,7 @@
 import 'package:amazon_clone/common/widgets/custom_button.dart';
 import 'package:amazon_clone/common/widgets/custom_textfield.dart';
 import 'package:amazon_clone/constants/global_vars.dart';
+import 'package:amazon_clone/features/auth/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 enum Auth { signin, signup }
@@ -14,11 +15,12 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   Auth _auth = Auth.signup;
-  final signUpFormsKey = GlobalKey<FormState>();
-  final signInFormsKey = GlobalKey<FormState>();
+  final _signUpFormsKey = GlobalKey<FormState>();
+  final _signInFormsKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final AuthService authService = AuthService();
 
   @override
   void dispose() {
@@ -26,6 +28,23 @@ class _AuthScreenState extends State<AuthScreen> {
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+  }
+
+  void signUpUser() {
+    authService.signupUser(
+      name: _nameController.text,
+      email: _emailController.text,
+      password: _passwordController.text,
+      context: context,
+    );
+  }
+
+  void signinUser() {
+    authService.signinUser(
+      email: _emailController.text,
+      password: _passwordController.text,
+      context: context,
+    );
   }
 
   @override
@@ -67,7 +86,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   padding: const EdgeInsets.all(8),
                   color: GlobalVars.backgroundColor,
                   child: Form(
-                    key: signUpFormsKey,
+                    key: _signUpFormsKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -86,7 +105,14 @@ class _AuthScreenState extends State<AuthScreen> {
                           hintText: "Password",
                         ),
                         const SizedBox(height: 10),
-                        CustomButton(text: "Sign Up", onPressed: () {})
+                        CustomButton(
+                          text: "Sign Up",
+                          onPressed: () {
+                            if (_signUpFormsKey.currentState!.validate()) {
+                              signUpUser();
+                            }
+                          },
+                        )
                       ],
                     ),
                   ),
@@ -113,7 +139,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   padding: const EdgeInsets.all(8),
                   color: GlobalVars.backgroundColor,
                   child: Form(
-                    key: signUpFormsKey,
+                    key: _signInFormsKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -127,7 +153,14 @@ class _AuthScreenState extends State<AuthScreen> {
                           hintText: "Password",
                         ),
                         const SizedBox(height: 10),
-                        CustomButton(text: "Sign In", onPressed: () {})
+                        CustomButton(
+                          text: "Sign In",
+                          onPressed: () {
+                            if (_signInFormsKey.currentState!.validate()) {
+                              signinUser();
+                            }
+                          },
+                        )
                       ],
                     ),
                   ),
