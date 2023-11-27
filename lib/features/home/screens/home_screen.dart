@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen>
       body: Center(
         child: Column(
           children: [
-            const Text('Home Screen'),
+            const Text('My Home Screen'),
             Text(userProvider.name!),
           ],
         ),
