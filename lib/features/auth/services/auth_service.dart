@@ -33,7 +33,7 @@ class AuthService {
           iV: null);
       http.Response response = await http.post(
         Uri.parse('$uri/api/signup'),
-        body: jsonEncode(user),
+        body: (user).toJson(),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8'
         },
@@ -84,6 +84,40 @@ class AuthService {
         },
       );
       log(response.body);
+    } catch (e) {
+      shawSnackbar(
+        context,
+        e.toString(),
+      );
+    }
+  }
+
+  Future<void> getUserData(BuildContext context) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString("auth-token");
+      if (token == null) prefs.setString("auth-token", "");
+      // http.Response response = await http.post(
+      //   Uri.parse('$uri/api/signin'),
+      //   body: jsonEncode({'email': email, 'password': password}),
+      //   headers: <String, String>{
+      //     'Content-Type': 'application/json; charset=UTF-8'
+      //   },
+      // );
+      // httpErrorHandling(
+      //   response: response,
+      //   context: context,
+      //   onSuccess: () async {
+      //     SharedPreferences prefs = await SharedPreferences.getInstance();
+      //     Provider.of<UserProvider>(context, listen: false)
+      //         .setUser(response.body);
+      //     await prefs.setString(
+      //         'auth-token', jsonDecode(response.body)['token']);
+      //     Navigator.pushNamedAndRemoveUntil(
+      //         context, HomeScreen.routeName, (route) => false);
+      //   },
+      // );
+      // log(response.body);
     } catch (e) {
       shawSnackbar(
         context,
