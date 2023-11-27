@@ -16,13 +16,13 @@ app.use(authRouter);
 
 //Connect to MongoDB
 mongoose.connect(MONGODB_URI).then(()=>{
-    console.log('Succsessfully Connected to MongoDB')
+    console.log('Succsessfully Connected to MongoDB') 
 }).catch(e=>{
-    console.log(`Connected to MongoDB Failed ${e}`)
+    console.log(`Connected to MongoDB Failed ${e}`) 
 
 })
 // Start the express application and listen on the specified port and IP address
 app.listen(PORT, "0.0.0.0",() => {
     // Log a message when the server is successfully connected
-    console.log(`Server is running in ${process.env.NODE_ENV}, Connected to port: ${PORT}`);
+    console.log(`Server running in ${process.env.NODE_ENV}, Connected to port: ${PORT}`);
 });
