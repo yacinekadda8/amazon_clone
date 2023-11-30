@@ -7,6 +7,9 @@ const jwt = require('jsonwebtoken');
 const authRouter = express.Router();
 const User = require('../models/user'); // Assuming you have a User model defined in the 'user' file
 
+// Vars
+const jwtSecretKey = process.env.JWT_SECRET_KEY ;
+
 // ------- Register
 authRouter.post('/api/signup', async (req, res) => {
     try {
@@ -54,13 +57,30 @@ authRouter.post('/api/signin', async (req, res) => {
         }
 
         // If the password is correct, generate a JWT token for authentication
-        const token = jwt.sign({ id: user.id }, "secretkey");
+        const token = jwt.sign({ id: user.id }, jwtSecretKey);
         
         // Return the token and user information (excluding the password) in the response
         res.json({ token, ...user._doc });
     } catch (e) {
         res.status(500).json({ error: e.message });
     }
+});
+authRouter.post('/IsTokenValid', async (req,res) => {
+    try {
+        const token =   req.header("auth-token");
+        if(!token) return res.json(false);
+        const verified = jwt.verify(token,'secretkey');
+        if (!verified) return res.json(false);
+        const user = await User.findById(verified.id);
+        if(!user) return res.json(false);
+        res.json(true);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+// Get user data 
+authRouter.get('/',async (req,res)=>{
+
 });
 
 // Helper function to validate email format

@@ -33,7 +33,7 @@ class AuthService {
           iV: null);
       http.Response response = await http.post(
         Uri.parse('$uri/api/signup'),
-        body: (user).toJson(), 
+        body: (user).toJson(),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8'
         },
@@ -91,12 +91,28 @@ class AuthService {
       );
     }
   }
-
+  // Function to check if the user's authentication token is valid
   Future<void> getUserData(BuildContext context) async {
     try {
+      // Get the authentication token from shared preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("auth-token");
+
+      // If the token is null, set it to an empty string
       if (token == null) prefs.setString("auth-token", "");
+
+      // Make an HTTP POST request to check if the token is valid
+      http.Response tokenResponse = await http
+          .post(Uri.parse('$uri/IsTokenValid'), headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'auth-token': token!,
+      });
+      // Decode the response body
+      var response = jsonDecode(tokenResponse.body);
+      if(response == true){
+        // get user data
+
+      }
       // http.Response response = await http.post(
       //   Uri.parse('$uri/api/signin'),
       //   body: jsonEncode({'email': email, 'password': password}),
